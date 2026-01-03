@@ -1,5 +1,10 @@
 # CI/CD 運用手順書
 
+## ブランチ構成
+- `main`: 本番ブランチ（将来用）
+- `dev`: 開発統合ブランチ（dev環境と連動）
+- `feature/*`: 機能開発ブランチ
+
 ## 開発フロー
 
 ### 1. 機能開発
@@ -23,7 +28,7 @@ git push origin feature/task-management-improvement
 - **自動実行される処理**:
   - Lint チェック
   - TypeScript ビルド
-  - Unit テスト (カバレッジ95%以上)
+  - Unit テスト (カバレッジ50%以上)
   - CDK synth 検証
   - Security スキャン
 
@@ -42,57 +47,26 @@ git push origin feature/task-management-improvement
 
 ### 5. 結果確認
 - **成功時**: dev環境で動作確認可能
-- **失敗時**: 自動ロールバック + Slack通知
+- **失敗時**: 自動ロールバック + 通知
 
-## 品質ゲート
+## 現在の運用
 
-### Phase 1: CI (Pull Request)
-- ✅ Lint エラー 0件
-- ✅ TypeScript コンパイル成功
-- ✅ Unit テスト カバレッジ 95%以上
-- ✅ CDK synth 成功
-- ✅ Security 脆弱性 0件
-
-### Phase 2: Integration Test
-- ✅ API レスポンス 200 OK
-- ✅ DynamoDB データ保存確認
-- ✅ 全エンドポイント疎通確認
-
-### Phase 3: E2E Test
-- ✅ 画面表示確認
-- ✅ タスク作成機能
-- ✅ ガントチャート表示
-- ✅ スクリーンショット取得
-
-## 失敗時の対応
-
-### 1. CI 失敗
+### 開発サイクル
 ```bash
-# ローカルで修正
-npm run lint
-npm test
-npm run build
+# 1. feature ブランチで開発
+git checkout -b feature/new-feature
+# コード変更
+git push origin feature/new-feature
 
-# 修正後、再プッシュ
-git add .
-git commit -m "fix: CI エラー修正"
-git push origin feature/task-management-improvement
+# 2. PR作成 (feature → dev)
+# GitHub UI で PR作成
+
+# 3. 自動CI実行 → 成功時に自動マージ
+
+# 4. dev環境に自動デプロイ
 ```
 
-### 2. デプロイ失敗
-- 自動ロールバックが実行される
-- GitHub Actions の Artifacts から Excel レポートをダウンロード
-- エラー内容を確認して修正
-
-### 3. Integration/E2E テスト失敗
-- `comprehensive-test-report.xlsx` でエラー詳細確認
-- 必要に応じてローカルでテスト実行:
-```bash
-npm run test:integration
-npm run test:e2e
-```
-
-## 本番リリース（将来）
+### 本番リリース（将来）
 ```bash
 # main ブランチにマージ（手動）
 git checkout main

@@ -5,7 +5,7 @@ on:
     branches: [ dev ]
     types: [ opened, synchronize, reopened ]
   push:
-    branches: [ dev ]
+    branches: [ dev, feature/* ]  # feature ブランチのプッシュも追加
   workflow_dispatch:
 
 env:
@@ -18,7 +18,7 @@ jobs:
   ci:
     name: 'CI: Code Quality & Tests'
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/feature/')
     
     steps:
     - name: Checkout code

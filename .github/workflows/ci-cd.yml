@@ -238,9 +238,9 @@ jobs:
   # Generate comprehensive test report
   generate-report:
     name: 'Generate Test Report'
-    needs: [integration-test, e2e-test]
+    needs: ci
     runs-on: ubuntu-latest
-    if: always()
+    if: always() && (needs.ci.result == 'success' || needs.ci.result == 'failure')
     
     steps:
     - name: Checkout code
@@ -261,7 +261,9 @@ jobs:
       uses: actions/download-artifact@v4
       
     - name: Generate Excel report
-      run: node scripts/generate-comprehensive-report.js
+      run: |
+        ls -la scripts/
+        node scripts/generate-comprehensive-report.js
       
     - name: Upload final report
       uses: actions/upload-artifact@v4

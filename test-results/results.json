@@ -1,0 +1,344 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\81704\\ai-developer\\playwright.config.js",
+    "rootDir": "C:/Users/81704/ai-developer/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 6
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/81704/ai-developer/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/81704/ai-developer/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 6,
+    "webServer": {
+      "command": "cd frontend && python -m http.server 8080",
+      "port": 8080,
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "e2e.spec.js",
+      "file": "e2e.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "AI Task Manager E2E Tests",
+          "file": "e2e.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should load the application",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 21,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-03T06:03:27.544Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "616cc0f313d283bb66d2-55c746705d277ac47fe5",
+              "file": "e2e.spec.js",
+              "line": 5,
+              "column": 7
+            },
+            {
+              "title": "should navigate between tabs",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 21,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-03T06:03:27.515Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "616cc0f313d283bb66d2-ec17f0d94ddb11312f46",
+              "file": "e2e.spec.js",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "should create a new task",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 24,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-03T06:03:27.472Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "616cc0f313d283bb66d2-c22c2b7234040d0c5eea",
+              "file": "e2e.spec.js",
+              "line": 30,
+              "column": 7
+            },
+            {
+              "title": "should display tasks in tasks tab",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 22,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-03T06:03:27.469Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "616cc0f313d283bb66d2-6987ff9e12b340019c0f",
+              "file": "e2e.spec.js",
+              "line": 68,
+              "column": 7
+            },
+            {
+              "title": "should display gantt chart",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 20,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-03T06:03:27.552Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "616cc0f313d283bb66d2-6f06850a2be2c7e03938",
+              "file": "e2e.spec.js",
+              "line": 112,
+              "column": 7
+            },
+            {
+              "title": "should handle project creation",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 28,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at C:\\Users\\81704\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1200\\chrome-headless-shell-win64\\chrome-headless-shell.exe\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-03T06:03:27.704Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "616cc0f313d283bb66d2-84ae99aa162c9712cd58",
+              "file": "e2e.spec.js",
+              "line": 156,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-01-03T06:03:21.826Z",
+    "duration": 6500.003999999999,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 6,
+    "flaky": 0
+  }
+}

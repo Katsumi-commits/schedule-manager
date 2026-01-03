@@ -1,0 +1,62 @@
+sequenceDiagram
+    participant User as 👤 User
+    participant UI as 🖥️ React UI
+    participant API as 🌐 API Gateway
+    participant Chat as 🤖 Chat Lambda
+    participant CRUD as 📝 CRUD Lambda
+    participant Bedrock as 🧠 Amazon Bedrock
+    participant DDB as 🗄️ DynamoDB
+    participant Backlog as 📋 Backlog API
+    participant SSM as ⚙️ SSM/Secrets
+    
+    %% Task Creation Flow
+    Note over User,SSM: Task Creation via Natural Language
+    User->>UI: Select Project & Enter Task Description
+    UI->>API: POST /chat {message, priority, projectId}
+    API->>Chat: Invoke Lambda
+    Chat->>SSM: Get Configuration & API Keys
+    SSM-->>Chat: Return Config
+    Chat->>Bedrock: Parse Natural Language
+    Note over Bedrock: Tool: TaskAssignment<br/>Extract: task, assignee, deadline, priority
+    Bedrock-->>Chat: Structured Task Data
+    Chat->>CRUD: Create Task in Database
+    CRUD->>DDB: INSERT Task Record
+    DDB-->>CRUD: Success
+    Chat->>Backlog: Create Backlog Issue
+    Backlog-->>Chat: Issue Created
+    Chat-->>API: Task Created Successfully
+    API-->>UI: Response
+    UI-->>User: Show Success Message
+    
+    %% Task Management Flow
+    Note over User,DDB: Task Management & Gantt Chart
+    User->>UI: View Tasks/Gantt Chart
+    UI->>API: GET /issues
+    API->>CRUD: Invoke Lambda
+    CRUD->>DDB: Query Tasks by Project
+    DDB-->>CRUD: Return Task List
+    CRUD-->>API: Task Data
+    API-->>UI: JSON Response
+    UI-->>User: Display Tasks/Gantt Chart
+    
+    %% Task Update Flow
+    Note over User,DDB: Task Updates (Drag & Drop)
+    User->>UI: Drag Gantt Bar (Update Dates)
+    UI->>API: PUT /issues/{id} {startDate, endDate}
+    API->>CRUD: Invoke Lambda
+    CRUD->>DDB: UPDATE Task Record
+    DDB-->>CRUD: Success
+    CRUD-->>API: Updated
+    API-->>UI: Response
+    UI-->>User: Refresh Gantt Chart
+    
+    %% Project Management Flow
+    Note over User,DDB: Project Management
+    User->>UI: Load Application
+    UI->>API: GET /projects
+    API->>CRUD: Invoke Lambda
+    CRUD->>DDB: Query Projects
+    DDB-->>CRUD: Project List
+    CRUD-->>API: Project Data
+    API-->>UI: JSON Response
+    UI-->>User: Show Project Selector

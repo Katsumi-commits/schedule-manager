@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>タスク移行ツール</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .log { background: #f8f9fa; padding: 15px; border-radius: 4px; margin-top: 20px; height: 400px; overflow-y: auto; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 タスク移行ツール</h1>
+        <p>既存のタスクを全て「Default Project」に紐づけます。</p>
+        
+        <button onclick="migrateTasksToDefaultProject()">移行開始</button>
+        
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://gzx7nfaiyb.execute-api.ap-northeast-1.amazonaws.com/prod/';
+        
+        function log(message) {
+            const logElement = document.getElementById('log');
+            logElement.innerHTML += message + '\n';
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        async function migrateTasksToDefaultProject() {
+            try {
+                log('🔄 既存タスクをDefault Projectに移行中...');
+                
+                // 1. 全タスクを取得
+                const tasksResponse = await fetch(`${API_URL}issues`);
+                const tasks = await tasksResponse.json();
+                
+                if (!Array.isArray(tasks)) {
+                    log('❌ タスクの取得に失敗しました');
+                    return;
+                }
+                
+                log(`📋 ${tasks.length}個のタスクが見つかりました`);
+                
+                // 2. Default Projectを作成（存在しない場合）
+                const defaultProject = {
+                    id: 'default',
+                    name: 'Default Project'
+                };
+                
+                try {
+                    await fetch(`${API_URL}projects`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(defaultProject)
+                    });
+                    log('✅ Default Projectを作成しました');
+                } catch (e) {
+                    log('ℹ️ Default Projectは既に存在します');
+                }
+                
+                // 3. 各タスクにprojectIdを追加
+                let updatedCount = 0;
+                let errorCount = 0;
+                
+                for (const task of tasks) {
+                    // projectIdが未設定のタスクのみ更新
+                    if (!task.projectId) {
+                        try {
+                            const updateResponse = await fetch(`${API_URL}issues/${task.id}`, {
+                                method: 'PUT',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({
+                                    ...task,
+                                    projectId: 'default',
+                                    createdAt: task.createdAt // 必須フィールド
+                                })
+                            });
+                            
+                            if (updateResponse.ok) {
+                                updatedCount++;
+                                log(`✅ タスク ${task.id.slice(-8)} を更新しました`);
+                            } else {
+                                errorCount++;
+                                log(`❌ タスク ${task.id.slice(-8)} の更新に失敗: ${updateResponse.status}`);
+                            }
+                        } catch (error) {
+                            errorCount++;
+                            log(`❌ タスク ${task.id.slice(-8)} の更新エラー: ${error.message}`);
+                        }
+                        
+                        // API制限を避けるため少し待機
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    } else {
+                        log(`ℹ️ タスク ${task.id.slice(-8)} は既にプロジェクトに紐づいています`);
+                    }
+                }
+                
+                log('\n📊 移行結果:');
+                log(`✅ 更新成功: ${updatedCount}個`);
+                log(`❌ 更新失敗: ${errorCount}個`);
+                log(`ℹ️ スキップ: ${tasks.length - updatedCount - errorCount}個`);
+                
+                if (updatedCount > 0) {
+                    log('\n🎉 タスクの移行が完了しました！');
+                    log('ブラウザでアプリを更新して確認してください。');
+                }
+                
+            } catch (error) {
+                log('❌ 移行処理でエラーが発生しました: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

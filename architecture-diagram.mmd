@@ -1,0 +1,98 @@
+graph TB
+    %% Frontend Layer
+    subgraph "Frontend (React SPA)"
+        UI[React UI Components]
+        Chat[💬 Chat Page]
+        Tasks[📋 Tasks Page] 
+        Gantt[📊 Gantt Chart Page]
+        
+        UI --> Chat
+        UI --> Tasks
+        UI --> Gantt
+    end
+    
+    %% API Gateway
+    subgraph "AWS API Gateway"
+        API[REST API Endpoints]
+        CORS[CORS Configuration]
+        
+        API --> CORS
+    end
+    
+    %% Lambda Functions
+    subgraph "AWS Lambda Functions"
+        ChatLambda[Chat Lambda<br/>Natural Language Processing]
+        CRUDLambda[CRUD Lambda<br/>Task Management]
+        BacklogLambda[Backlog Integration Lambda<br/>External API Calls]
+        
+        ChatLambda --> CRUDLambda
+        ChatLambda --> BacklogLambda
+    end
+    
+    %% AI Services
+    subgraph "AWS Bedrock"
+        Bedrock[Amazon Nova Pro<br/>Task Parsing & NLP]
+        Tools[Tool Configuration<br/>TaskAssignment & TaskQuery]
+        
+        Bedrock --> Tools
+    end
+    
+    %% Database Layer
+    subgraph "AWS DynamoDB"
+        ProjectsTable[(Projects Table)]
+        TasksTable[(Tasks Table)]
+        
+        ProjectsTable --> TasksTable
+    end
+    
+    %% External Services
+    subgraph "External APIs"
+        BacklogAPI[Backlog API<br/>Issue Management]
+        BacklogAuth[API Key Authentication]
+        
+        BacklogAPI --> BacklogAuth
+    end
+    
+    %% Configuration & Secrets
+    subgraph "AWS Configuration"
+        SSM[Systems Manager<br/>Parameters]
+        Secrets[Secrets Manager<br/>API Keys]
+        
+        SSM --> Secrets
+    end
+    
+    %% CDK Infrastructure
+    subgraph "AWS CDK Deployment"
+        FrontendStack[Frontend Stack<br/>S3 + CloudFront]
+        BackendStack[Backend Stack<br/>Lambda + DynamoDB + API Gateway]
+        
+        FrontendStack --> BackendStack
+    end
+    
+    %% Data Flow Connections
+    UI -->|HTTP Requests| API
+    API -->|Invoke| ChatLambda
+    API -->|Invoke| CRUDLambda
+    
+    ChatLambda -->|NLP Processing| Bedrock
+    ChatLambda -->|Read Config| SSM
+    ChatLambda -->|Get Secrets| Secrets
+    
+    CRUDLambda -->|CRUD Operations| ProjectsTable
+    CRUDLambda -->|CRUD Operations| TasksTable
+    
+    BacklogLambda -->|API Calls| BacklogAPI
+    BacklogLambda -->|Authentication| Secrets
+    
+    %% Styling
+    classDef frontend fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef aws fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef database fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef external fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef config fill:#fff8e1,stroke:#e65100,stroke-width:2px
+    
+    class UI,Chat,Tasks,Gantt frontend
+    class API,CORS,ChatLambda,CRUDLambda,BacklogLambda,Bedrock,Tools,FrontendStack,BackendStack aws
+    class ProjectsTable,TasksTable database
+    class BacklogAPI,BacklogAuth external
+    class SSM,Secrets config

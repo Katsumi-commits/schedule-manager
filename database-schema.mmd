@@ -1,0 +1,50 @@
+erDiagram
+    PROJECTS {
+        string id PK "Project ID"
+        string name "Project Name"
+        string description "Project Description"
+        string createdAt "Creation Timestamp"
+        string updatedAt "Update Timestamp"
+        string status "Active/Inactive"
+    }
+    
+    TASKS {
+        string id PK "Task ID"
+        string projectId FK "Foreign Key to Projects"
+        string title "Task Title"
+        string description "Task Description"
+        string assigneeId "Assigned User ID"
+        string status "Open/In Progress/Review/Closed"
+        number priority "1=Low, 2=Medium, 3=High"
+        string startDate "Task Start Date (YYYY-MM-DD)"
+        string endDate "Task End Date (YYYY-MM-DD)"
+        string createdAt "Creation Timestamp"
+        string updatedAt "Update Timestamp"
+        string backlogIssueKey "Backlog Issue Reference"
+    }
+    
+    BACKLOG_INTEGRATION {
+        string taskId FK "Foreign Key to Tasks"
+        string backlogIssueId "Backlog Issue ID"
+        string backlogIssueKey "Backlog Issue Key"
+        string backlogProjectId "Backlog Project ID"
+        string syncStatus "Synced/Pending/Failed"
+        string lastSyncAt "Last Sync Timestamp"
+    }
+    
+    %% Relationships
+    PROJECTS ||--o{ TASKS : "has many"
+    TASKS ||--|| BACKLOG_INTEGRATION : "syncs with"
+    
+    %% Notes
+    PROJECTS {
+        note "Stores project information and metadata"
+    }
+    
+    TASKS {
+        note "Main task entity with Gantt chart data"
+    }
+    
+    BACKLOG_INTEGRATION {
+        note "Tracks synchronization with external Backlog API"
+    }

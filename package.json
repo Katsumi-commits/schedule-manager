@@ -8,6 +8,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
+    "test:e2e": "playwright test",
+    "test:report": "node scripts/generate-test-report.js",
+    "deploy": "cdk deploy --context envname=dev",
+    "deploy:prod": "cdk deploy --context envname=prod --require-approval never",
     "cdk": "cdk"
   },
   "devDependencies": {
@@ -17,7 +21,9 @@
     "ts-jest": "^29.2.5",
     "aws-cdk": "2.1100.0",
     "ts-node": "^10.9.2",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "@playwright/test": "^1.40.0",
+    "exceljs": "^4.4.0"
   },
   "dependencies": {
     "aws-cdk-lib": "2.232.1",

@@ -13,7 +13,7 @@ describe('AI Task Manager Stacks', () => {
 
   test('Database Stack creates DynamoDB tables', () => {
     const stack = new DatabaseStack(app, 'TestDatabaseStack', {
-      envName: 'test'
+      env: { account: '123456789012', region: 'ap-northeast-1' }
     });
     
     const template = Template.fromStack(stack);
@@ -26,11 +26,11 @@ describe('AI Task Manager Stacks', () => {
 
   test('Backend Stack creates Lambda functions', () => {
     const databaseStack = new DatabaseStack(app, 'TestDatabaseStack', {
-      envName: 'test'
+      env: { account: '123456789012', region: 'ap-northeast-1' }
     });
     
     const stack = new BackendStack(app, 'TestBackendStack', {
-      envName: 'test',
+      env: { account: '123456789012', region: 'ap-northeast-1' },
       issuesTable: databaseStack.issuesTable,
       projectsTable: databaseStack.projectsTable
     });
@@ -45,7 +45,7 @@ describe('AI Task Manager Stacks', () => {
 
   test('Frontend Stack creates S3 and CloudFront', () => {
     const stack = new FrontendStack(app, 'TestFrontendStack', {
-      envName: 'test',
+      env: { account: '123456789012', region: 'ap-northeast-1' },
       apiUrl: 'https://test-api.example.com'
     });
     

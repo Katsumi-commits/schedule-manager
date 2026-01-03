@@ -8,6 +8,12 @@ on:
     branches: [ dev, feature/* ]  # feature ブランチのプッシュも追加
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+  security-events: write
+
 env:
   NODE_VERSION: '18'
   AWS_REGION: 'ap-northeast-1'
@@ -41,25 +47,33 @@ jobs:
         
     - name: Auto-create PR
       if: success()
-      uses: peter-evans/create-pull-request@v5
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref_name }}
-        base: dev
-        title: "Auto PR: ${{ github.ref_name }}"
-        body: |
-          🤖 **自動生成されたPull Request**
-          
-          **ブランチ**: `${{ github.ref_name }}`
-          **Quick Check**: ✅ 成功
-          
-          ### 変更内容
-          - 機能追加・修正
-          
-          ### テスト結果
-          - Lint: ✅
-          - Build: ✅ 
-          - Unit Test: ✅
+      run: |
+        # Check if PR already exists
+        EXISTING_PR=$(gh pr list --head ${{ github.ref_name }} --base dev --json number --jq '.[0].number')
+        
+        if [ "$EXISTING_PR" = "null" ] || [ -z "$EXISTING_PR" ]; then
+          gh pr create \
+            --title "Auto PR: ${{ github.ref_name }}" \
+            --body "🤖 **自動生成されたPull Request**
+
+**ブランチ**: \`${{ github.ref_name }}\`
+**Quick Check**: ✅ 成功
+
+### 変更内容
+- 機能追加・修正
+
+### テスト結果
+- Lint: ✅
+- Build: ✅
+- Unit Test: ✅" \
+            --base dev \
+            --head ${{ github.ref_name }}
+          echo "PR created successfully"
+        else
+          echo "PR already exists: #$EXISTING_PR"
+        fi
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Phase 2: Full CI for Pull Requests
   ci:

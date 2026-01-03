@@ -48,24 +48,12 @@ jobs:
     - name: Auto-create PR
       if: success()
       run: |
-        # Check if PR already exists
         EXISTING_PR=$(gh pr list --head ${{ github.ref_name }} --base dev --json number --jq '.[0].number')
         
         if [ "$EXISTING_PR" = "null" ] || [ -z "$EXISTING_PR" ]; then
           gh pr create \
             --title "Auto PR: ${{ github.ref_name }}" \
-            --body "🤖 **自動生成されたPull Request**
-
-**ブランチ**: \`${{ github.ref_name }}\`
-**Quick Check**: ✅ 成功
-
-### 変更内容
-- 機能追加・修正
-
-### テスト結果
-- Lint: ✅
-- Build: ✅
-- Unit Test: ✅" \
+            --body "Auto-generated Pull Request from ${{ github.ref_name }}" \
             --base dev \
             --head ${{ github.ref_name }}
           echo "PR created successfully"

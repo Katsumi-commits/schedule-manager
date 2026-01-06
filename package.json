@@ -7,9 +7,12 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:e2e": "playwright test",
+    "test:integration": "node tests/integration.test.js",
     "test:report": "node scripts/generate-test-report.js",
+    "test:comprehensive": "node scripts/generate-comprehensive-report.js",
+    "lint": "echo 'Lint check placeholder'",
     "deploy": "cdk deploy --context envname=dev",
     "deploy:prod": "cdk deploy --context envname=prod --require-approval never",
     "cdk": "cdk"
@@ -23,7 +26,8 @@
     "ts-node": "^10.9.2",
     "typescript": "~5.9.3",
     "@playwright/test": "^1.40.0",
-    "exceljs": "^4.4.0"
+    "exceljs": "^4.4.0",
+    "axios": "^1.6.0"
   },
   "dependencies": {
     "aws-cdk-lib": "2.232.1",

@@ -4,7 +4,15 @@ test.describe('AI Task Manager E2E Tests', () => {
   
   test('should load the application', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('h1')).toContainText('AI Task Manager');
+    
+    // Wait for React app to load
+    await page.waitForSelector('.app-container', { timeout: 10000 });
+    
+    // Check if navigation tabs are present
+    await expect(page.locator('button:has-text("💬 Chat")')).toBeVisible();
+    await expect(page.locator('button:has-text("📋 Tasks")')).toBeVisible();
+    await expect(page.locator('button:has-text("📊 Gantt Chart")')).toBeVisible();
+    
     await page.screenshot({ path: 'screenshots/app-loaded.png', fullPage: true });
   });
 

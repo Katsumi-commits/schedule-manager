@@ -38,6 +38,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
+          echo "Fetching remote branches..."
+          git fetch origin dev
+          
           echo "Checking for changes between branches..."
           CHANGES=$(git diff --name-only origin/dev...HEAD)
           

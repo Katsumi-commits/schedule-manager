@@ -25,6 +25,7 @@ jobs:
     name: 'Quick Check'
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/heads/feature/') && github.event_name == 'push'
+    environment: dev
     
     steps:
     - name: Checkout code
@@ -48,6 +49,9 @@ jobs:
     - name: Auto-create PR
       if: success()
       run: |
+        echo "Testing token permissions..."
+        gh auth status
+        
         EXISTING_PR=$(gh pr list --head ${{ github.ref_name }} --base dev --json number --jq '.[0].number')
         
         if [ "$EXISTING_PR" = "null" ] || [ -z "$EXISTING_PR" ]; then
@@ -61,7 +65,7 @@ jobs:
           echo "PR already exists: #$EXISTING_PR"
         fi
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   # Phase 2: Full CI for Pull Requests
   ci:

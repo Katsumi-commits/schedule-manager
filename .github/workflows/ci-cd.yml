@@ -293,9 +293,9 @@ jobs:
   # Generate comprehensive test report
   generate-report:
     name: 'Generate Test Report'
-    needs: ci
+    needs: [integration-test, e2e-test]
     runs-on: ubuntu-latest
-    if: always() && (needs.ci.result == 'success' || needs.ci.result == 'failure')
+    if: always()
     
     steps:
     - name: Checkout code

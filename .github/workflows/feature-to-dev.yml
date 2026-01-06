@@ -38,22 +38,26 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          echo "Checking existing PRs..."
-          gh pr list --head "${{ github.ref_name }}" --base dev
+          echo "Checking for changes between branches..."
+          CHANGES=$(git diff --name-only origin/dev...HEAD)
           
-          PR_COUNT=$(gh pr list --head "${{ github.ref_name }}" --base dev | wc -l)
+          if [ -z "$CHANGES" ]; then
+            echo "No changes detected between dev and ${{ github.ref_name }}"
+            echo "Skipping PR creation"
+            exit 0
+          fi
           
-          if [ "$PR_COUNT" -eq "0" ]; then
-            echo "Creating new PR..."
+          echo "Changes detected: $CHANGES"
+          
+          EXISTING_PR=$(gh pr list --head ${{ github.ref_name }} --base dev --json number --jq '.[0].number')
+          
+          if [ "$EXISTING_PR" = "null" ] || [ -z "$EXISTING_PR" ]; then
             gh pr create \
-              --base dev \
-              --head "${{ github.ref_name }}" \
               --title "Auto PR: ${{ github.ref_name }}" \
-              --body "Auto merge feature to dev"
+              --body "Auto-generated Pull Request from ${{ github.ref_name }}" \
+              --base dev \
+              --head ${{ github.ref_name }}
             echo "PR created successfully"
-            
-            echo "Verifying PR creation..."
-            gh pr list --head "${{ github.ref_name }}" --base dev
           else
-            echo "PR already exists"
+            echo "PR already exists: #$EXISTING_PR"
           fi

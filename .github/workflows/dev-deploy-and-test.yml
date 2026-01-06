@@ -35,15 +35,14 @@ jobs:
 
       - name: Deploy
         run: |
-          # CDK bootstrap確認・更新
-          npm run cdk bootstrap aws://339712731337/ap-northeast-1 || echo "Bootstrap completed"
+          # CDK Bootstrap強制更新
+          npm run cdk bootstrap aws://339712731337/ap-northeast-1 --force
           
-          # 既存スタック削除（必要に応じて）
-          aws cloudformation delete-stack --stack-name AiIssueManager-dev || echo "Stack not found"
-          aws cloudformation wait stack-delete-complete --stack-name AiIssueManager-dev || echo "Wait completed"
+          # CDKアセットクリア
+          rm -rf cdk.out
           
-          # 新規デプロイ
-          npm run cdk deploy -- --all --context envname=dev --require-approval never
+          # 再デプロイ
+          npm run cdk deploy -- --all --context envname=dev --require-approval never --verbose
         
       - name: Wait for CloudFront cache invalidation
         run: |

@@ -1,0 +1,116 @@
+name: Dev Deploy & Test
+
+on:
+  push:
+    branches:
+      - dev
+
+permissions:
+  contents: read
+  security-events: write
+
+env:
+  AWS_REGION: 'ap-northeast-1'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - run: npm ci
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy
+        run: npm run cdk deploy -- --all --context envname=dev --require-approval never
+        
+      - name: Health check
+        run: |
+          sleep 30
+          API_URL=$(aws cloudformation describe-stacks \
+            --stack-name AiIssueManager-dev \
+            --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
+            --output text)
+          if [ ! -z "$API_URL" ]; then
+            curl -f "${API_URL}health" || echo "Health check endpoint not available"
+          fi
+
+  integration-test:
+    needs: deploy
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+      - run: npm ci
+      - run: npm install --save-dev axios
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - run: |
+          API_URL=$(aws cloudformation describe-stacks \
+            --stack-name AiIssueManager-dev \
+            --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
+            --output text)
+          export API_URL
+          node tests/integration.test.js
+      - name: Upload integration results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results
+          path: test-results/integration/
+
+  e2e-test:
+    needs: deploy
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+      - run: npm ci
+      - run: npm install --save-dev playwright @playwright/test
+      - run: npx playwright install chromium
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - run: |
+          FRONTEND_URL=$(aws cloudformation describe-stacks \
+            --stack-name AiIssueManager-dev \
+            --query 'Stacks[0].Outputs[?OutputKey==`WebsiteUrl`].OutputValue' \
+            --output text)
+          sed -i "s|http://localhost:8080|${FRONTEND_URL}|g" playwright.config.js
+          npx playwright test
+      - name: Upload E2E results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-test-results
+          path: |
+            test-results/
+            screenshots/
+            playwright-report/

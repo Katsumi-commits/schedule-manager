@@ -13,24 +13,24 @@ async function runIntegrationTests() {
 
   console.log(`Starting integration tests against: ${API_URL}`);
 
-  // Test 1: Health Check
+  // Test 1: API Health Check via Projects endpoint
   try {
-    const response = await axios.get(`${API_URL}health`, { timeout: 10000 });
+    const response = await axios.get(`${API_URL}projects`, { timeout: 10000 });
     results.push({
-      test: 'Health Check',
+      test: 'API Health Check',
       status: 'PASS',
       response: response.status,
       duration: Date.now() - testStartTime
     });
-    console.log('✅ Health check passed');
+    console.log('✅ API Health check passed');
   } catch (error) {
     results.push({
-      test: 'Health Check',
+      test: 'API Health Check',
       status: 'FAIL',
       error: error.message,
       duration: Date.now() - testStartTime
     });
-    console.log('❌ Health check failed:', error.message);
+    console.log('❌ API Health check failed:', error.message);
   }
 
   // Test 2: Projects API

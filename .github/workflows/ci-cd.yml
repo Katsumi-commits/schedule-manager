@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
   actions: read
+  pull-requests: read
   security-events: write
 
 env:
@@ -104,7 +104,10 @@ jobs:
       with:
         languages: typescript, javascript
         
-    - name: Security scan
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+        
+    - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
         
     - name: Upload test coverage
@@ -121,11 +124,11 @@ jobs:
     if: github.event_name == 'pull_request' && success()
     
     steps:
-    - name: Auto-merge PR
-      uses: pascalgn/merge-action@v0.15.6
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        merge_method: squash
+    - name: Enable auto-merge
+      run: |
+        gh pr merge ${{ github.event.pull_request.number }} --squash --auto
+      env:
+        GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   # Phase 3: CD - Deploy to dev environment  
   deploy-dev:

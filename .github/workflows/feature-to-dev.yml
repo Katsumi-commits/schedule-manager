@@ -44,25 +44,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          PR=$(gh pr list \
-            --head "${{ github.ref_name }}" \
-            --base dev \
-            --state open \
-            --limit 1 \
-            --json number \
-            --jq '.[0].number // empty')
-
-          if [ -z "$PR" ]; then
-            PR=$(gh pr create \
-              --base dev \
-              --head "${{ github.ref_name }}" \
+          echo "Testing token permissions..."
+          gh auth status
+          
+          EXISTING_PR=$(gh pr list --head ${{ github.ref_name }} --base dev --json number --jq '.[0].number')
+          
+          if [ "$EXISTING_PR" = "null" ] || [ -z "$EXISTING_PR" ]; then
+            gh pr create \
               --title "Auto PR: ${{ github.ref_name }}" \
-              --body "Auto merge feature to dev" \
-              --json number \
-              --jq '.number')
+              --body "Auto-generated Pull Request from ${{ github.ref_name }}" \
+              --base dev \
+              --head ${{ github.ref_name }}
+            echo "PR created successfully"
+          else
+            echo "PR already exists: #$EXISTING_PR"
           fi
-
-          gh pr merge "$PR" --squash --auto
 
   # Full CI for Pull Requests
   ci:

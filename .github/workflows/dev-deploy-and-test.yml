@@ -44,7 +44,7 @@ jobs:
             --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
             --output text)
           if [ ! -z "$API_URL" ]; then
-            curl -f "${API_URL}health" || echo "Health check endpoint not available"
+            curl -f "${API_URL}projects" || echo "API endpoint not available"
           fi
 
   integration-test:

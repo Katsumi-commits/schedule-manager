@@ -305,6 +305,27 @@ def handler(event, context):
     const chat = api.root.addResource('chat');
     chat.addMethod('POST', new apigateway.LambdaIntegration(chatFunction));
 
+    // Health check endpoint
+    const health = api.root.addResource('health');
+    health.addMethod('GET', new apigateway.MockIntegration({
+      integrationResponses: [{
+        statusCode: '200',
+        responseTemplates: {
+          'application/json': JSON.stringify({ status: 'healthy', timestamp: new Date().toISOString() })
+        }
+      }],
+      requestTemplates: {
+        'application/json': JSON.stringify({ statusCode: 200 })
+      }
+    }), {
+      methodResponses: [{
+        statusCode: '200',
+        responseModels: {
+          'application/json': apigateway.Model.EMPTY_MODEL
+        }
+      }]
+    });
+
     // Projects endpoints
     const projects = api.root.addResource('projects');
     projects.addMethod('GET', new apigateway.LambdaIntegration(projectsFunction));

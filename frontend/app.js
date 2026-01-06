@@ -213,14 +213,45 @@ function App() {
   const getNextStatus = (currentStatus) => ({'Open': 'In Progress', 'In Progress': 'Review', 'Review': 'Closed'}[currentStatus] || 'In Progress');
   const isHoliday = (date) => {
     const day = date.getDay();
-    if(day >= 5) return true;
-    const month = date.getMonth() + 1, dayOfMonth = date.getDate();
-    return (month === 1 && dayOfMonth <= 3) || (month === 2 && [11,23].includes(dayOfMonth)) ||
-           (month === 3 && dayOfMonth === 20) || (month === 4 && dayOfMonth === 29) ||
-           (month === 5 && [3,4,5].includes(dayOfMonth)) || (month === 7 && dayOfMonth === 15) ||
-           (month === 8 && dayOfMonth === 11) || (month === 9 && [16,23].includes(dayOfMonth)) ||
-           (month === 10 && dayOfMonth === 14) || (month === 11 && [3,23].includes(dayOfMonth)) ||
-           (month === 12 && dayOfMonth >= 23);
+    if(day === 0 || day === 6) return true; // 土日
+    
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const dayOfMonth = date.getDate();
+    
+    // 2026年の祝日
+    if (year === 2026) {
+      const holidays = [
+        [1, 1],   // 元日
+        [1, 12],  // 成人の日（第2月曜日）
+        [2, 11],  // 建国記念の日
+        [2, 23],  // 天皇誕生日
+        [3, 20],  // 春分の日
+        [4, 29],  // 昭和の日
+        [5, 3],   // 憲法記念日
+        [5, 4],   // みどりの日
+        [5, 5],   // こどもの日
+        [7, 20],  // 海の日（第3月曜日）
+        [8, 11],  // 山の日
+        [9, 21],  // 敬老の日（第3月曜日）
+        [9, 23],  // 秋分の日
+        [10, 12], // スポーツの日（第2月曜日）
+        [11, 3],  // 文化の日
+        [11, 23], // 勤労感謝の日
+        [12, 29], [12, 30], [12, 31] // 年末休暇
+      ];
+      
+      return holidays.some(([m, d]) => month === m && dayOfMonth === d);
+    }
+    
+    // その他の年は基本的な祝日のみ
+    return (month === 1 && dayOfMonth === 1) || // 元日
+           (month === 2 && dayOfMonth === 11) || // 建国記念の日
+           (month === 4 && dayOfMonth === 29) || // 昭和の日
+           (month === 5 && [3,4,5].includes(dayOfMonth)) || // GW
+           (month === 8 && dayOfMonth === 11) || // 山の日
+           (month === 11 && [3,23].includes(dayOfMonth)) || // 文化の日、勤労感謝の日
+           (month === 12 && dayOfMonth >= 29); // 年末
   };
 
   const updateTaskDates = async (taskId, createdAt, startDate, endDate) => {

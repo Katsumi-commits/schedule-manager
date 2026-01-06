@@ -99,10 +99,13 @@ jobs:
     - name: CDK synth validation
       run: npm run cdk synth -- --context envname=dev || echo "CDK synth completed"
         
-    - name: Security scan
-      uses: github/codeql-action/analyze@v3
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
       with:
         languages: typescript, javascript
+        
+    - name: Security scan
+      uses: github/codeql-action/analyze@v3
         
     - name: Upload test coverage
       uses: actions/upload-artifact@v4

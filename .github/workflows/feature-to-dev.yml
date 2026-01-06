@@ -38,18 +38,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          echo "Testing token permissions..."
-          gh auth status
-          
-          EXISTING_PR=$(gh pr list --head ${{ github.ref_name }} --base dev --json number --jq '.[0].number')
-          
-          if [ "$EXISTING_PR" = "null" ] || [ -z "$EXISTING_PR" ]; then
+          PR=$(gh pr list \
+            --head "${{ github.ref_name }}" \
+            --base dev)
+
+          if [ -z "$PR" ]; then
             gh pr create \
-              --title "Auto PR: ${{ github.ref_name }}" \
-              --body "Auto-generated Pull Request from ${{ github.ref_name }}" \
               --base dev \
-              --head ${{ github.ref_name }}
+              --head "${{ github.ref_name }}" \
+              --title "Auto PR: ${{ github.ref_name }}" \
+              --body "Auto merge feature to dev"
             echo "PR created successfully"
           else
-            echo "PR already exists: #$EXISTING_PR"
+            echo "PR already exists"
           fi

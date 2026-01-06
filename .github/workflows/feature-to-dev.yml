@@ -38,17 +38,22 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          PR=$(gh pr list \
-            --head "${{ github.ref_name }}" \
-            --base dev)
-
-          if [ -z "$PR" ]; then
+          echo "Checking existing PRs..."
+          gh pr list --head "${{ github.ref_name }}" --base dev
+          
+          PR_COUNT=$(gh pr list --head "${{ github.ref_name }}" --base dev | wc -l)
+          
+          if [ "$PR_COUNT" -eq "0" ]; then
+            echo "Creating new PR..."
             gh pr create \
               --base dev \
               --head "${{ github.ref_name }}" \
               --title "Auto PR: ${{ github.ref_name }}" \
               --body "Auto merge feature to dev"
             echo "PR created successfully"
+            
+            echo "Verifying PR creation..."
+            gh pr list --head "${{ github.ref_name }}" --base dev
           else
             echo "PR already exists"
           fi

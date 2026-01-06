@@ -125,6 +125,9 @@ jobs:
     environment: dev
     
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
     - name: Enable auto-merge
       run: |
         gh pr merge ${{ github.event.pull_request.number }} --squash --auto

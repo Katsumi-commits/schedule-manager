@@ -69,7 +69,8 @@ export class FrontendStack extends cdk.NestedStack {
       ],
       destinationBucket: websiteBucket,
       distribution,
-      distributionPaths: ['/*']
+      distributionPaths: ['/*'],
+      prune: true // 古いファイルを削除
     });
 
     // Website URL

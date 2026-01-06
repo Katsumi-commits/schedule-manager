@@ -36,6 +36,23 @@ jobs:
       - name: Deploy
         run: npm run cdk deploy -- --all --context envname=dev --require-approval never
         
+      - name: Wait for CloudFront cache invalidation
+        run: |
+          echo "Waiting for CloudFront cache invalidation..."
+          sleep 60
+          
+          DISTRIBUTION_ID=$(aws cloudformation describe-stacks \
+            --stack-name AiIssueManager-dev \
+            --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontDistributionId`].OutputValue' \
+            --output text)
+          
+          if [ ! -z "$DISTRIBUTION_ID" ]; then
+            echo "CloudFront Distribution ID: $DISTRIBUTION_ID"
+            aws cloudfront create-invalidation \
+              --distribution-id "$DISTRIBUTION_ID" \
+              --paths "/*" || echo "Manual invalidation failed, but deployment continues"
+          fi
+        
       - name: Health check
         run: |
           sleep 30

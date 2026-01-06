@@ -47,8 +47,10 @@ jobs:
           PR=$(gh pr list \
             --head "${{ github.ref_name }}" \
             --base dev \
+            --state open \
+            --limit 1 \
             --json number \
-            --jq '.[0].number')
+            --jq '.[0].number // empty')
 
           if [ -z "$PR" ]; then
             PR=$(gh pr create \

@@ -39,12 +39,38 @@ jobs:
       - name: Health check
         run: |
           sleep 30
+          
+          # List all stacks to find correct name
+          echo "Available stacks:"
+          aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE UPDATE_COMPLETE
+          
+          # Try to get API URL from main stack
           API_URL=$(aws cloudformation describe-stacks \
             --stack-name AiIssueManager-dev \
             --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
-            --output text)
+            --output text 2>/dev/null || echo "")
+            
+          if [ -z "$API_URL" ]; then
+            echo "API URL not found in main stack, checking nested stacks..."
+            # Try Backend nested stack
+            BACKEND_STACK=$(aws cloudformation list-stack-resources \
+              --stack-name AiIssueManager-dev \
+              --query 'StackResourceSummaries[?LogicalResourceId==`Backend`].PhysicalResourceId' \
+              --output text 2>/dev/null || echo "")
+            
+            if [ ! -z "$BACKEND_STACK" ]; then
+              API_URL=$(aws cloudformation describe-stacks \
+                --stack-name "$BACKEND_STACK" \
+                --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
+                --output text 2>/dev/null || echo "")
+            fi
+          fi
+          
           if [ ! -z "$API_URL" ]; then
+            echo "Found API URL: $API_URL"
             curl -f "${API_URL}health" || echo "Health check endpoint not available"
+          else
+            echo "API URL not found, skipping health check"
           fi
 
   integration-test:

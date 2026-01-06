@@ -151,7 +151,10 @@ def handler(event, context):
       },
       role: lambdaRole,
       timeout: cdk.Duration.seconds(30),
-      logRetention: logs.RetentionDays.ONE_WEEK
+      logGroup: new logs.LogGroup(this, 'ChatFunctionLogGroup', {
+        retention: logs.RetentionDays.ONE_WEEK,
+        removalPolicy: cdk.RemovalPolicy.DESTROY
+      })
     });
 
     // Projects CRUD Lambda
@@ -221,7 +224,10 @@ def handler(event, context):
       },
       role: lambdaRole,
       timeout: cdk.Duration.seconds(15),
-      logRetention: logs.RetentionDays.ONE_WEEK
+      logGroup: new logs.LogGroup(this, 'ProjectsFunctionLogGroup', {
+        retention: logs.RetentionDays.ONE_WEEK,
+        removalPolicy: cdk.RemovalPolicy.DESTROY
+      })
     });
 
     // Issues CRUD Lambda
@@ -287,7 +293,10 @@ def handler(event, context):
       },
       role: lambdaRole,
       timeout: cdk.Duration.seconds(15),
-      logRetention: logs.RetentionDays.ONE_WEEK
+      logGroup: new logs.LogGroup(this, 'IssuesFunctionLogGroup', {
+        retention: logs.RetentionDays.ONE_WEEK,
+        removalPolicy: cdk.RemovalPolicy.DESTROY
+      })
     });
 
     // API Gateway

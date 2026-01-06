@@ -4,24 +4,18 @@ on:
   push:
     branches:
       - feature/*
-  pull_request:
-    branches: [ dev ]
-    types: [ opened, synchronize, reopened ]
 
 permissions:
   contents: write
   pull-requests: write
-  security-events: write
 
 env:
   NODE_VERSION: '18'
-  AWS_REGION: 'ap-northeast-1'
 
 jobs:
   quick-check:
     name: 'Quick Check'
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/feature/') && github.event_name == 'push'
     environment: dev
 
     steps:
@@ -40,7 +34,7 @@ jobs:
           npm run build || echo "Build completed"
           npm test
 
-      - name: Create or Merge PR to dev
+      - name: Create PR to dev
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
@@ -59,70 +53,3 @@ jobs:
           else
             echo "PR already exists: #$EXISTING_PR"
           fi
-
-  # Full CI for Pull Requests
-  ci:
-    name: 'CI: Full Validation'
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Lint check
-      run: |
-        npm run lint || echo "Lint check completed"
-        
-    - name: TypeScript check
-      run: npm run build || echo "Build completed with warnings"
-      
-    - name: Unit tests
-      run: npm test -- --coverage
-      
-    - name: CDK synth validation
-      run: npm run cdk synth -- --context envname=dev || echo "CDK synth completed"
-        
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: typescript, javascript
-        
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
-        
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-        
-    - name: Upload test coverage
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report
-        path: coverage/
-
-  # Auto-merge PR if CI passes
-  auto-merge:
-    name: 'Auto-merge PR'
-    needs: ci
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && success()
-    environment: dev
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Enable auto-merge
-      run: |
-        gh pr merge ${{ github.event.pull_request.number }} --squash --auto
-      env:
-        GH_TOKEN: ${{ secrets.PAT_TOKEN }}

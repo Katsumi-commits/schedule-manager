@@ -1,5 +1,9 @@
 const { useState, useEffect } = React;
-const API_URL = window.API_URL || 'https://gzx7nfaiyb.execute-api.ap-northeast-1.amazonaws.com/prod/';
+const API_URL = window.API_URL;
+
+if (!API_URL) {
+  console.error('API_URL not found. Please check config.js is loaded.');
+}
 
 function App() {
   const [currentPage, setCurrentPage] = useState('chat');
@@ -7,7 +11,7 @@ function App() {
   const [issues,setIssues] = useState([]);
   const [projects,setProjects] = useState([]);
   const [loading,setLoading] = useState(false);
-  const [input,setInput] = useState('タイトル：\n担当：\n期間:');
+  const [input,setInput] = useState('タイトル：\n担当：\n期間：');
   const [priority,setPriority] = useState('Medium');
   const [selectedProject,setSelectedProject] = useState('');
   const [showProjectModal,setShowProjectModal] = useState(false);

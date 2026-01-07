@@ -77,26 +77,62 @@ def parse_with_bedrock(message):
                     Input: {message}
                     Today: {datetime.utcnow().strftime('%Y-%m-%d')}
                     
-                    Calculate business days (exclude weekends and Japanese holidays: 12/27-1/4).
+                    Calculate business days (exclude weekends and Japanese holidays).
                     Examples:
                     - "今日から3日" = 3 business days from today
                     - "1/28から3日" = 3 business days from Jan 28
                     - "明日から2日" = 2 business days from tomorrow
-                    - "明後日から4日" = 4 business days from day after tomorrow
                     
-                    Return only JSON: {{"title": "task name", "assignee": "person", "startDate": "YYYY-MM-DD", "endDate": "YYYY-MM-DD"}}'''
+                    Return ONLY valid JSON: {{"title": "task name", "assignee": "person", "startDate": "YYYY-MM-DD", "endDate": "YYYY-MM-DD"}}'''
                 }]
             })
         )
         
         result = json.loads(response['body'].read())
         content = result['content'][0]['text']
+        print(f"Bedrock response: {content}")
         
-        json_match = re.search(r'\\{[^{}]*\\}', content)
+        # JSON抽出を改善
+        json_match = re.search(r'\{[^{}]*"title"[^{}]*"assignee"[^{}]*"startDate"[^{}]*"endDate"[^{}]*\}', content)
         if json_match:
-            return json.loads(json_match.group())
-    except Exception:
-        pass
+            parsed_json = json.loads(json_match.group())
+            print(f"Parsed JSON: {parsed_json}")
+            return parsed_json
+    except Exception as e:
+        print(f"Bedrock parsing error: {e}")
+    
+    # フォールバック: 簡単なパース
+    try:
+        lines = message.split('\n')
+        title = assignee = period = None
+        
+        for line in lines:
+            if 'タイトル' in line or '題名' in line:
+                title = re.sub(r'.*?[：:](.*)', r'\1', line).strip()
+            elif '担当' in line:
+                assignee = re.sub(r'.*?[：:](.*)', r'\1', line).strip()
+            elif '期間' in line:
+                period = re.sub(r'.*?[：:](.*)', r'\1', line).strip()
+        
+        if title and assignee and period:
+            today = datetime.utcnow().date()
+            if '今日から' in period:
+                days = int(re.search(r'(\d+)', period).group(1))
+                start_date = today
+                end_date = today + timedelta(days=days-1)
+            else:
+                start_date = today
+                end_date = today + timedelta(days=2)
+            
+            return {
+                'title': title,
+                'assignee': assignee,
+                'startDate': start_date.strftime('%Y-%m-%d'),
+                'endDate': end_date.strftime('%Y-%m-%d')
+            }
+    except Exception as e:
+        print(f"Fallback parsing error: {e}")
+    
     return None
 
 def handler(event, context):

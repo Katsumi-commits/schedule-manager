@@ -19,6 +19,8 @@ function App() {
   const [editingProject,setEditingProject] = useState(null);
   const [isRecording,setIsRecording] = useState(false);
   const [recognition,setRecognition] = useState(null);
+  const [selectedAssignee,setSelectedAssignee] = useState('');
+  const [hideClosedTasks,setHideClosedTasks] = useState(false);
   const [searchId,setSearchId] = useState('');
   const [dragState, setDragState] = useState(null);
 
@@ -455,7 +457,26 @@ function App() {
       const today = new Date();
       today.setHours(0,0,0,0);
       
-      const allDates = issues.flatMap(issue => [
+      // Filter issues by selected project and assignee
+      let filteredIssues = issues.filter(issue => issue.projectId === selectedProject);
+      if (selectedAssignee) {
+        filteredIssues = filteredIssues.filter(issue => issue.assigneeId === selectedAssignee);
+      }
+      if (hideClosedTasks) {
+        filteredIssues = filteredIssues.filter(issue => issue.status !== 'Closed');
+      }
+      
+      // Sort by start date
+      filteredIssues.sort((a, b) => {
+        const dateA = new Date(a.startDate || today);
+        const dateB = new Date(b.startDate || today);
+        return dateA - dateB;
+      });
+      
+      // Get unique assignees for the selected project
+      const assignees = [...new Set(issues.filter(issue => issue.projectId === selectedProject).map(issue => issue.assigneeId))];
+      
+      const allDates = filteredIssues.flatMap(issue => [
         new Date(issue.startDate || today),
         new Date(issue.endDate || new Date(today.getTime() + 3*24*60*60*1000))
       ]);
@@ -479,10 +500,29 @@ function App() {
       
       return (
         <div className="gantt-container">
+          <div className="project-selector">
+            <label>📁 プロジェクト:</label>
+            <select value={selectedProject} onChange={e=>setSelectedProject(e.target.value)}>
+              {projects.map(project => (
+                <option key={project.id} value={project.id}>{project.name}</option>
+              ))}
+            </select>
+            <label>👤 担当者:</label>
+            <select value={selectedAssignee} onChange={e=>setSelectedAssignee(e.target.value)}>
+              <option value="">全員</option>
+              {assignees.map(assignee => (
+                <option key={assignee} value={assignee}>{assignee}</option>
+              ))}
+            </select>
+            <label>
+              <input type="checkbox" checked={hideClosedTasks} onChange={e=>setHideClosedTasks(e.target.checked)} />
+              Closedタスクを非表示
+            </label>
+          </div>
           <div className="gantt-wrapper">
             <div className="gantt-tasks-column">
               <div className="gantt-task-header">📋 Task</div>
-              {issues.sort((a,b) => a.assigneeId.localeCompare(b.assigneeId)).map(issue => (
+              {filteredIssues.map(issue => (
                 <div key={issue.id} className="gantt-task-cell">
                   <div className="task-title" title={issue.title}>{issue.title}</div>
                   <div className="task-actions">
@@ -500,7 +540,7 @@ function App() {
                 ))}
               </div>
               <div className="gantt-timeline-content">
-                {issues.sort((a,b) => a.assigneeId.localeCompare(b.assigneeId)).map((issue, index) => {
+                {filteredIssues.map((issue, index) => {
                   const taskStartDate = new Date(issue.startDate || today);
                   taskStartDate.setHours(0,0,0,0);
                   const taskEndDate = new Date(issue.endDate || new Date(today.getTime() + 3*24*60*60*1000));

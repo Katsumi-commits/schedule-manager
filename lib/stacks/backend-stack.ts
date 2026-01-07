@@ -25,7 +25,8 @@ export class BackendStack extends cdk.NestedStack {
     const lambdaRole = new iam.Role(this, 'LambdaRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')
+        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AWSMarketplaceMeteringFullAccess')
       ],
       inlinePolicies: {
         BedrockAccess: new iam.PolicyDocument({

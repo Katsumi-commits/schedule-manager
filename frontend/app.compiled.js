@@ -643,7 +643,7 @@ function App() {
           key: issue.id,
           className: "gantt-row",
           style: {
-            top: index * 60 + 'px'
+            top: index * 40 + 'px'
           }
         }, /*#__PURE__*/React.createElement("div", {
           className: "gantt-bar",

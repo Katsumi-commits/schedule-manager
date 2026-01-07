@@ -551,7 +551,7 @@ function App() {
                   if (startOffset >= FIXED_DAY_COUNT || startOffset + duration < 0) return null;
                   
                   return (
-                    <div key={issue.id} className="gantt-row" style={{top: index * 60 + 'px'}}>
+                    <div key={issue.id} className="gantt-row" style={{top: index * 40 + 'px'}}>
                       <div 
                         className="gantt-bar"
                         style={{

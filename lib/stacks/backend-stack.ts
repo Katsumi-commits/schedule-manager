@@ -32,7 +32,11 @@ export class BackendStack extends cdk.NestedStack {
           statements: [
             new iam.PolicyStatement({
               effect: iam.Effect.ALLOW,
-              actions: ['bedrock:InvokeModel'],
+              actions: [
+                'bedrock:InvokeModel',
+                'aws-marketplace:ViewSubscriptions',
+                'aws-marketplace:Subscribe'
+              ],
               resources: ['*']
             })
           ]

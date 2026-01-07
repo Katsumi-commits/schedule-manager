@@ -73,7 +73,7 @@ test.describe('AI Task Manager E2E Tests', () => {
     await page.click('button:has-text("タスク作成")');
     
     // Verify success message
-    await expect(page.locator('.message.assistant')).toContainText('Task #12345678 created successfully!');
+    await expect(page.locator('.message.assistant')).toContainText('Task #45678 created successfully!');
     
     // Take screenshot after task creation
     await page.screenshot({ path: 'screenshots/task-created.png', fullPage: true });

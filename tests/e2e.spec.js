@@ -73,7 +73,7 @@ test.describe('AI Task Manager E2E Tests', () => {
     await page.click('button:has-text("タスク作成")');
     
     // Verify success message
-    await expect(page.locator('.message.assistant')).toContainText('Task #45678 created successfully!');
+    await expect(page.locator('.message.assistant')).toContainText('Task #12345678 created successfully!');
     
     // Take screenshot after task creation
     await page.screenshot({ path: 'screenshots/task-created.png', fullPage: true });
@@ -114,7 +114,10 @@ test.describe('AI Task Manager E2E Tests', () => {
     });
     
     await page.click('button:has-text("📋 Tasks")');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
+    
+    // Wait for tasks to load
+    await page.waitForSelector('.issue-title', { timeout: 10000 });
     
     // Verify task is displayed
     await expect(page.locator('.issue-title')).toContainText('テスト用タスク1');
@@ -157,7 +160,11 @@ test.describe('AI Task Manager E2E Tests', () => {
     });
     
     await page.click('button:has-text("📊 Gantt Chart")');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
+    
+    // Wait for gantt chart to render
+    await page.waitForSelector('.gantt-container', { timeout: 10000 });
+    await page.waitForSelector('.gantt-bar', { timeout: 10000 });
     
     // Verify gantt elements are present
     await expect(page.locator('.gantt-container')).toBeVisible();

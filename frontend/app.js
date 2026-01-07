@@ -1,5 +1,9 @@
 const { useState, useEffect } = React;
-const API_URL = window.API_URL || 'https://gzx7nfaiyb.execute-api.ap-northeast-1.amazonaws.com/prod/';
+const API_URL = window.API_URL;
+
+if (!API_URL) {
+  console.error('API_URL not found. Please check config.js is loaded.');
+}
 
 function App() {
   const [currentPage, setCurrentPage] = useState('chat');

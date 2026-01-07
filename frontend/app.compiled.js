@@ -20,6 +20,8 @@ function App() {
   const [editingProject, setEditingProject] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recognition, setRecognition] = useState(null);
+  const [selectedAssignee, setSelectedAssignee] = useState('');
+  const [hideClosedTasks, setHideClosedTasks] = useState(false);
   const [searchId, setSearchId] = useState('');
   const [dragState, setDragState] = useState(null);
 
@@ -542,7 +544,26 @@ function App() {
       const FIXED_DAY_COUNT = 60;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const allDates = issues.flatMap(issue => [new Date(issue.startDate || today), new Date(issue.endDate || new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000))]);
+
+      // Filter issues by selected project and assignee
+      let filteredIssues = issues.filter(issue => issue.projectId === selectedProject);
+      if (selectedAssignee) {
+        filteredIssues = filteredIssues.filter(issue => issue.assigneeId === selectedAssignee);
+      }
+      if (hideClosedTasks) {
+        filteredIssues = filteredIssues.filter(issue => issue.status !== 'Closed');
+      }
+
+      // Sort by start date
+      filteredIssues.sort((a, b) => {
+        const dateA = new Date(a.startDate || today);
+        const dateB = new Date(b.startDate || today);
+        return dateA - dateB;
+      });
+
+      // Get unique assignees for the selected project
+      const assignees = [...new Set(issues.filter(issue => issue.projectId === selectedProject).map(issue => issue.assigneeId))];
+      const allDates = filteredIssues.flatMap(issue => [new Date(issue.startDate || today), new Date(issue.endDate || new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000))]);
       const minDate = allDates.length > 0 ? new Date(Math.min(...allDates)) : new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
       const maxDate = allDates.length > 0 ? new Date(Math.max(...allDates)) : new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
       const startDate = new Date(Math.min(today.getTime() - 15 * 24 * 60 * 60 * 1000, minDate.getTime() - 7 * 24 * 60 * 60 * 1000));
@@ -566,12 +587,32 @@ function App() {
       return /*#__PURE__*/React.createElement("div", {
         className: "gantt-container"
       }, /*#__PURE__*/React.createElement("div", {
+        className: "project-selector"
+      }, /*#__PURE__*/React.createElement("label", null, "\uD83D\uDCC1 \u30D7\u30ED\u30B8\u30A7\u30AF\u30C8:"), /*#__PURE__*/React.createElement("select", {
+        value: selectedProject,
+        onChange: e => setSelectedProject(e.target.value)
+      }, projects.map(project => /*#__PURE__*/React.createElement("option", {
+        key: project.id,
+        value: project.id
+      }, project.name))), /*#__PURE__*/React.createElement("label", null, "\uD83D\uDC64 \u62C5\u5F53\u8005:"), /*#__PURE__*/React.createElement("select", {
+        value: selectedAssignee,
+        onChange: e => setSelectedAssignee(e.target.value)
+      }, /*#__PURE__*/React.createElement("option", {
+        value: ""
+      }, "\u5168\u54E1"), assignees.map(assignee => /*#__PURE__*/React.createElement("option", {
+        key: assignee,
+        value: assignee
+      }, assignee))), /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("input", {
+        type: "checkbox",
+        checked: hideClosedTasks,
+        onChange: e => setHideClosedTasks(e.target.checked)
+      }), "Closed\u30BF\u30B9\u30AF\u3092\u975E\u8868\u793A")), /*#__PURE__*/React.createElement("div", {
         className: "gantt-wrapper"
       }, /*#__PURE__*/React.createElement("div", {
         className: "gantt-tasks-column"
       }, /*#__PURE__*/React.createElement("div", {
         className: "gantt-task-header"
-      }, "\uD83D\uDCCB Task"), issues.sort((a, b) => a.assigneeId.localeCompare(b.assigneeId)).map(issue => /*#__PURE__*/React.createElement("div", {
+      }, "\uD83D\uDCCB Task"), filteredIssues.map(issue => /*#__PURE__*/React.createElement("div", {
         key: issue.id,
         className: "gantt-task-cell"
       }, /*#__PURE__*/React.createElement("div", {
@@ -590,7 +631,7 @@ function App() {
         className: `gantt-day-header ${isHoliday(day) ? 'holiday' : ''}`
       }, String(day.getMonth() + 1).padStart(2, '0'), "/", String(day.getDate()).padStart(2, '0')))), /*#__PURE__*/React.createElement("div", {
         className: "gantt-timeline-content"
-      }, issues.sort((a, b) => a.assigneeId.localeCompare(b.assigneeId)).map((issue, index) => {
+      }, filteredIssues.map((issue, index) => {
         const taskStartDate = new Date(issue.startDate || today);
         taskStartDate.setHours(0, 0, 0, 0);
         const taskEndDate = new Date(issue.endDate || new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000));

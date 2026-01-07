@@ -82,6 +82,8 @@ def parse_with_bedrock(message):
                     Input: {message}
                     Today: {datetime.utcnow().strftime('%Y-%m-%d')}
                     
+                    2026 Japanese holidays: 1/1, 1/13 (Coming of Age Day), 2/11, 2/23, 3/20, 4/29, 5/3, 5/4, 5/5, 7/20 (Marine Day), 8/11, 9/21 (Respect for the Aged Day), 9/23, 10/12 (Sports Day), 11/3, 11/23
+                    
                     Calculate business days (exclude weekends and Japanese holidays).
                     Examples:
                     - "今日から3日" = 3 business days from today

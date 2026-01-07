@@ -184,7 +184,7 @@ button:hover {
 }
 .gantt-tasks-column {
   width: 258px; background: linear-gradient(135deg, #667eea, #764ba2);
-  flex-shrink: 0; min-height: 640px;
+  flex-shrink: 0;
 }
 .gantt-task-header {
   width: 258px; height: 40px; padding: 8px 15px; font-size: 1em;
@@ -211,7 +211,7 @@ button:hover {
   display: flex; align-items: center; justify-content: center; box-sizing: border-box;
 }
 .gantt-day-header.holiday { background: rgba(231, 76, 60, 0.8); color: white; font-weight: bold; }
-.gantt-timeline-content { position: relative; min-width: 1800px; height: 600px; min-height: 600px; }
+.gantt-timeline-content { position: relative; min-width: 1800px; height: auto; }
 .gantt-grid-container {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   pointer-events: none; min-width: 1800px;

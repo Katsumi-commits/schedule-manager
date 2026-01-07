@@ -136,13 +136,19 @@ def parse_with_bedrock(message):
     return None
 
 def handler(event, context):
+    print(f"Received event: {json.dumps(event)}")
+    
     if event.get('httpMethod') == 'OPTIONS':
         return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': ''}
     
     try:
+        print(f"Raw body: {event.get('body', 'No body')}")
         body = json.loads(event['body'])
         message = body.get('message', '')
         priority = body.get('priority', 'Medium')
+        project_id = body.get('projectId', 'default')
+        
+        print(f"Parsed - message: {message}, priority: {priority}, projectId: {project_id}")
         
         # Bedrockで自然言語処理
         parsed = parse_with_bedrock(message)
@@ -164,8 +170,10 @@ def handler(event, context):
             'assigneeId': parsed['assignee'],
             'startDate': parsed['startDate'],
             'endDate': parsed['endDate'],
-            'projectId': body.get('projectId', 'default')
+            'projectId': project_id
         }
+        
+        print(f"Creating item: {json.dumps(item, default=str)}")
         
         table.put_item(Item=item)
         
@@ -176,6 +184,9 @@ def handler(event, context):
         }
         
     except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
         return {
             'statusCode': 500,
             'headers': CORS_HEADERS,
@@ -383,20 +394,20 @@ def handler(event, context):
     projects.addMethod('GET', new apigateway.LambdaIntegration(projectsFunction));
     projects.addMethod('POST', new apigateway.LambdaIntegration(projectsFunction));
     
-    const project = projects.addResource('{id}');
-    project.addMethod('PUT', new apigateway.LambdaIntegration(projectsFunction));
+    const projectById = projects.addResource('{id}');
+    projectById.addMethod('PUT', new apigateway.LambdaIntegration(projectsFunction));
 
     // Issues endpoints
     const issues = api.root.addResource('issues');
     issues.addMethod('GET', new apigateway.LambdaIntegration(issuesFunction));
     
-    const issue = issues.addResource('{id}');
-    issue.addMethod('PUT', new apigateway.LambdaIntegration(issuesFunction));
-    issue.addMethod('DELETE', new apigateway.LambdaIntegration(issuesFunction));
+    const issueById = issues.addResource('{id}');
+    issueById.addMethod('PUT', new apigateway.LambdaIntegration(issuesFunction));
+    issueById.addMethod('DELETE', new apigateway.LambdaIntegration(issuesFunction));
 
     this.apiUrl = api.url;
 
-    // Outputs
+    // Output API URL
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: this.apiUrl,
       description: 'API Gateway URL'

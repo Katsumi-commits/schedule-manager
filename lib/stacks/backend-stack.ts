@@ -108,11 +108,11 @@ def parse_with_bedrock(message):
         
         for line in lines:
             if 'タイトル' in line or '題名' in line:
-                title = re.sub(r'.*?[：:](.*)', r'\1', line).strip()
+                title = re.sub(r'.*?[：:](.*)$', r'\\1', line).strip()
             elif '担当' in line:
-                assignee = re.sub(r'.*?[：:](.*)', r'\1', line).strip()
+                assignee = re.sub(r'.*?[：:](.*)$', r'\\1', line).strip()
             elif '期間' in line:
-                period = re.sub(r'.*?[：:](.*)', r'\1', line).strip()
+                period = re.sub(r'.*?[：:](.*)$', r'\\1', line).strip()
         
         if title and assignee and period:
             today = datetime.utcnow().date()

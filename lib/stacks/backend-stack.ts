@@ -405,26 +405,9 @@ def handler(event, context):
     issueById.addMethod('PUT', new apigateway.LambdaIntegration(issuesFunction));
     issueById.addMethod('DELETE', new apigateway.LambdaIntegration(issuesFunction));
 
-    // Output API URL
-    new cdk.CfnOutput(this, 'ApiUrl', {
-      value: api.url,
-      description: 'API Gateway URL'
-    });
-    
-    const project = projects.addResource('{id}');
-    project.addMethod('PUT', new apigateway.LambdaIntegration(projectsFunction));
-
-    // Issues endpoints
-    const issues = api.root.addResource('issues');
-    issues.addMethod('GET', new apigateway.LambdaIntegration(issuesFunction));
-    
-    const issue = issues.addResource('{id}');
-    issue.addMethod('PUT', new apigateway.LambdaIntegration(issuesFunction));
-    issue.addMethod('DELETE', new apigateway.LambdaIntegration(issuesFunction));
-
     this.apiUrl = api.url;
 
-    // Outputs
+    // Output API URL
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: this.apiUrl,
       description: 'API Gateway URL'

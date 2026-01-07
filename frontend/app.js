@@ -303,10 +303,7 @@ function App() {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          messages: [{
-            role: 'user',
-            content: message
-          }],
+          message: message,
           priority,
           projectId: selectedProject
         })

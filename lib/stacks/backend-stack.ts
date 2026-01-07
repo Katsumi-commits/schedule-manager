@@ -281,9 +281,16 @@ def decimal_default(obj):
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['ISSUES_TABLE'])
 
-CORS_HEADERS = {'Access-Control-Allow-Origin': '*'}
+CORS_HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type,Authorization'
+}
 
 def handler(event, context):
+    if event.get('httpMethod') == 'OPTIONS':
+        return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': ''}
+    
     method = event['httpMethod']
     
     try:

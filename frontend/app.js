@@ -11,7 +11,7 @@ function App() {
   const [issues,setIssues] = useState([]);
   const [projects,setProjects] = useState([]);
   const [loading,setLoading] = useState(false);
-  const [input,setInput] = useState('タイトル：\n担当：\n期間：');
+  const [input,setInput] = useState('タイトル：\n担当：\n期間:');
   const [priority,setPriority] = useState('Medium');
   const [selectedProject,setSelectedProject] = useState('');
   const [showProjectModal,setShowProjectModal] = useState(false);

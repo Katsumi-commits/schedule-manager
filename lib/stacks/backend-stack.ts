@@ -101,54 +101,20 @@ def parse_with_bedrock(message):
     except Exception as e:
         print(f"Bedrock parsing error: {e}")
     
-    # フォールバック: 簡単なパース
-    try:
-        lines = message.split('\n')
-        title = assignee = period = None
-        
-        for line in lines:
-            if 'タイトル' in line or '題名' in line:
-                title = re.sub(r'.*?[：:](.*)$', r'\\1', line).strip()
-            elif '担当' in line:
-                assignee = re.sub(r'.*?[：:](.*)$', r'\\1', line).strip()
-            elif '期間' in line:
-                period = re.sub(r'.*?[：:](.*)$', r'\\1', line).strip()
-        
-        if title and assignee and period:
-            today = datetime.utcnow().date()
-            if '今日から' in period:
-                days = int(re.search(r'(\d+)', period).group(1))
-                start_date = today
-                end_date = today + timedelta(days=days-1)
-            else:
-                start_date = today
-                end_date = today + timedelta(days=2)
-            
-            return {
-                'title': title,
-                'assignee': assignee,
-                'startDate': start_date.strftime('%Y-%m-%d'),
-                'endDate': end_date.strftime('%Y-%m-%d')
-            }
-    except Exception as e:
-        print(f"Fallback parsing error: {e}")
-    
     return None
 
 def handler(event, context):
-    print(f"Received event: {json.dumps(event)}")
+    print(f"Chat function called: {json.dumps(event)}")
+    print(f"Context: {context}")
+    print(f"Environment: ISSUES_TABLE={os.environ.get('ISSUES_TABLE')}")
     
     if event.get('httpMethod') == 'OPTIONS':
         return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': ''}
     
     try:
-        print(f"Raw body: {event.get('body', 'No body')}")
         body = json.loads(event['body'])
         message = body.get('message', '')
         priority = body.get('priority', 'Medium')
-        project_id = body.get('projectId', 'default')
-        
-        print(f"Parsed - message: {message}, priority: {priority}, projectId: {project_id}")
         
         # Bedrockで自然言語処理
         parsed = parse_with_bedrock(message)
@@ -170,10 +136,8 @@ def handler(event, context):
             'assigneeId': parsed['assignee'],
             'startDate': parsed['startDate'],
             'endDate': parsed['endDate'],
-            'projectId': project_id
+            'projectId': body.get('projectId', 'default')
         }
-        
-        print(f"Creating item: {json.dumps(item, default=str)}")
         
         table.put_item(Item=item)
         
@@ -184,9 +148,7 @@ def handler(event, context):
         }
         
     except Exception as e:
-        print(f"Error occurred: {str(e)}")
-        import traceback
-        print(f"Traceback: {traceback.format_exc()}")
+        print(f"Error: {str(e)}")
         return {
             'statusCode': 500,
             'headers': CORS_HEADERS,
@@ -227,6 +189,8 @@ CORS_HEADERS = {
 }
 
 def handler(event, context):
+    print(f"Projects function called: {json.dumps(event)}")
+    print(f"Method: {event.get('httpMethod')}")
     if event.get('httpMethod') == 'OPTIONS':
         return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': ''}
     
@@ -299,6 +263,8 @@ CORS_HEADERS = {
 }
 
 def handler(event, context):
+    print(f"Issues function called: {json.dumps(event)}")
+    print(f"Method: {event.get('httpMethod')}")
     if event.get('httpMethod') == 'OPTIONS':
         return {'statusCode': 200, 'headers': CORS_HEADERS, 'body': ''}
     

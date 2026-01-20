@@ -1,0 +1,86 @@
+項目,内容
+システム名,AI Task Manager
+概要,自然言語でタスクを作成・管理するWebアプリケーション
+アーキテクチャ,AWS CDK + React SPA + API Gateway + Lambda + DynamoDB
+
+■アーキテクチャ構成
+コンポーネント,技術,説明
+フロントエンド,React (CDN),静的Webアプリケーション
+ホスティング,S3 + CloudFront,静的サイトホスティング
+API,API Gateway + Lambda,RESTful API
+データベース,DynamoDB,NoSQLデータベース
+AI処理,Amazon Bedrock (Claude 3 Haiku),自然言語処理
+
+■データベース設計
+テーブル名,パーティションキー,ソートキー,属性
+Issues,id,createdAt,"title, description, priority, status, assigneeId, startDate, endDate, projectId"
+Projects,id,-,"name, createdAt"
+
+■API設計
+エンドポイント,メソッド,説明
+/chat,POST,自然言語からタスク作成
+/issues,GET,タスク一覧取得
+/issues/{id},PUT,タスク更新
+/issues/{id},DELETE,タスク削除
+/projects,GET,プロジェクト一覧取得
+/projects,POST,プロジェクト作成
+/projects/{id},PUT,プロジェクト更新
+/health,GET,ヘルスチェック
+
+■画面設計
+画面名,機能,主要コンポーネント
+Chat,自然言語でタスク作成,textarea + 音声入力 + プロジェクト選択
+Tasks,タスク一覧表示・管理,プロジェクト別グループ表示 + 検索 + 削除
+Gantt Chart,ガントチャート表示,プロジェクト・担当者フィルタ + ドラッグ&ドロップ + ステータス変更
+
+■機能一覧
+分類,機能名,説明
+タスク管理,自然言語タスク作成,日本語でタスクの詳細を入力し自動パース
+タスク管理,音声入力,Web Speech APIによる音声認識
+タスク管理,営業日計算,土日祝日を除いた期間計算
+タスク管理,タスク一覧表示,プロジェクト別グループ表示
+タスク管理,タスク検索,ID部分一致検索
+タスク管理,タスク削除,確認ダイアログ付き削除
+プロジェクト管理,プロジェクト作成,モーダルダイアログでの作成
+プロジェクト管理,プロジェクト編集,既存プロジェクト名変更
+ガントチャート,視覚的スケジュール表示,横軸：日付、縦軸：タスク
+ガントチャート,ドラッグ&ドロップ,タスクの移動・期間変更
+ガントチャート,フィルタリング,プロジェクト・担当者・完了タスク非表示
+ガントチャート,ステータス変更,ダブルクリックでステータス進行
+
+■技術仕様
+項目,仕様
+フロントエンド言語,JavaScript (React)
+バックエンド言語,Python 3.11
+インフラ,AWS CDK (TypeScript)
+認証,なし（パブリックアクセス）
+CORS,全オリジン許可
+ログ保持期間,1週間
+リージョン,ap-northeast-1
+
+■デプロイメント
+環境,説明
+dev,開発環境
+prod,本番環境
+デプロイ方法,GitHub Actions + AWS CDK
+成果物,S3バケット + CloudFront + API Gateway + Lambda関数
+
+■セキュリティ
+項目,対策
+S3バケット,非公開設定 + OAI経由アクセス
+API,CORS設定
+Lambda,最小権限IAMロール
+DynamoDB,Lambda関数からのみアクセス
+
+■パフォーマンス
+項目,設定値
+Lambda Timeout,30秒（Chat）/ 15秒（その他）
+DynamoDB,オンデマンド課金
+CloudFront,キャッシュ最適化
+API Gateway,REST API
+
+■監視・ログ
+項目,設定
+CloudWatch Logs,Lambda関数ログ
+ログ保持期間,1週間
+エラーハンドリング,try-catch + エラーレスポンス

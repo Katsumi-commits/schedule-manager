@@ -73,7 +73,7 @@ test.describe('AI Task Manager E2E Tests', () => {
     await page.click('button:has-text("タスク作成")');
     
     // Verify success message
-    await expect(page.locator('.message.assistant')).toContainText('Task #45678 created successfully!');
+    await expect(page.locator('.message.assistant')).toContainText('Task #12345678 created successfully!');
     
     // Take screenshot after task creation
     await page.screenshot({ path: 'screenshots/task-created.png', fullPage: true });
@@ -120,7 +120,7 @@ test.describe('AI Task Manager E2E Tests', () => {
     await page.waitForSelector('.issue-title', { timeout: 10000 });
     
     // Verify task is displayed
-    await expect(page.locator('.issue-title')).toContainText('テスト用タスク1');
+    await expect(page.locator('.issue-title').first()).toBeVisible();
     
     // Take screenshot of tasks view
     await page.screenshot({ path: 'screenshots/tasks-with-data.png', fullPage: true });

@@ -296,6 +296,7 @@ function App() {
 
   const sendFormattedMessage = async () => {
     if(!input.trim() || !selectedProject) return;
+    
     setMessages(prev=>[...prev,{type:'user',content:input}]);
     const message = input;
     setInput('タイトル：\n担当：\n期間：'); 
